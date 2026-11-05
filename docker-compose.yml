@@ -1,0 +1,52 @@
+services:
+  spr:
+    build: .
+    image: spr-prescreen:dev
+    ports:
+      - "127.0.0.1:8000:8000"                # reachable from this computer only, not the network
+    volumes:
+      - spr-data:/data                       # database + uploaded papers persist across restarts
+      - ./criteria:/app/criteria             # edit the screening lists without rebuilding
+    environment:
+      SPR_LLM_URL: "http://ollama:11434"     # local model for contextual judgment; nothing leaves the machine
+      SPR_LLM_MODEL: "qwen3:8b"
+    networks: [front, airgap]
+    depends_on:
+      - ollama
+    read_only: true                          # code and system files cannot be changed at runtime
+    tmpfs:
+      - /tmp:size=512m
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    pids_limit: 512
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:0.40.13
+    volumes:
+      - ollama-models:/root/.ollama          # downloaded model weights
+    environment:
+      OLLAMA_NUM_PARALLEL: "3"               # three readings at once
+      OLLAMA_FLASH_ATTENTION: "1"            # faster attention, less memory
+      OLLAMA_KV_CACHE_TYPE: "q8_0"           # half-size cache so three readings fit in 8 GB
+      OLLAMA_KEEP_ALIVE: "30m"
+    networks: [airgap]                       # no port published; only the app can reach it, and it has no internet
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+    # The model download needs internet once: see "Run it" in the README.
+
+networks:
+  front: {}                                  # carries only the published localhost port
+  airgap:
+    internal: true                           # no route to the internet
+
+volumes:
+  spr-data:
+  ollama-models:

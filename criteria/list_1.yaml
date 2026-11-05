@@ -1,0 +1,244 @@
+# LIST ONE: the overarching list. Any clear match makes the paper RED. Screening always continues to List 2.
+# Source: the review guide's screening lists. Item numbers follow
+# the guide, which has no item 2. Do not add or remove items: only the detection details below are ours.
+list: 1
+policy_version: screening-lists-v1
+criteria:
+  - id: L1-1
+    markings_uppercase: true
+    number: 1
+    name: Classified information
+    flag_when: "classification or control markings on this paper's own content, a cited source marked (S)/(C)/(TS)/(CUI)/(FOUO), or details that together could reveal something classified"
+    not_when: "a disclaimer saying the paper has no classified content; an acronym in brackets; discussion of the classification system in general; public reporting about formerly classified programs"
+    related_terms: ["SIPRNet", "SIPRNET", "JWICS", "sensitive compartmented information", "SCIF", "classification marking", "classified information"]
+    description: "Anything classified for national defense or foreign policy reasons. Examples: Classification markings; details that together could reveal something classified. Example classification markings: (C) (S) (TS) (CUI). It doesn't matter if there is more to the marking, it would still mark as a red flag. Ex: (S//NF/PROPIN) (C//FRD) (//GBR S) (TS//SI/TK) (S//RD) (S//REL) (TS//REL TO USA, AUS, CAN, GBR) (S//RD-N)"
+    source_policy: "List 1 #1; CDSE Marking National Security Information job aid"
+    detection: [regex, exact, fuzzy]
+    patterns:
+      # Compound portion markings: (S//NF/PROPIN), (TS//SI/TK), (S//REL TO USA, AUS, CAN, GBR), (C//FRD), (S//RD-N)
+      - regex: '\((?:TS|S|C|U|CUI)//[A-Z0-9][A-Z0-9 ,/\-]*\)'
+        ignore_case: false
+        strength: validated
+      # Foreign government markings: (//GBR S)
+      - regex: '\(//[A-Z]{3} (?:TS|S|C)\)'
+        ignore_case: false
+        strength: validated
+      - regex: '(?<![A-Za-z0-9])\((?:TS|CUI)\)'
+        ignore_case: false
+        strength: validated
+        acronym_check: true
+      # Upper-case only: "restricted data" in lower case is common in ordinary research prose.
+      - regex: '\b(?:RESTRICTED DATA|CLASSIFIED BY|DERIVED FROM):?'
+        ignore_case: false
+        strength: strong
+      # Bare (S) / (C) are real markings but also figure-panel labels: reported as possible matches.
+      - regex: '(?<![A-Za-z0-9])\((?:S|C)\)(?=\s)'
+        ignore_case: false
+        strength: weak
+        acronym_check: true
+    keywords:
+      - TOP SECRET
+      - SECRET//NOFORN
+      - SECRET//REL
+      - NOFORN
+      - CONTROLLED UNCLASSIFIED INFORMATION
+      - CONTROLLED UNCLASSIFIED
+      - CUI
+      - FOUO
+      - FOR OFFICIAL USE ONLY
+      - DECLASSIFY ON
+      - FORMERLY RESTRICTED DATA
+      - SPECIAL ACCESS PROGRAM
+    fuzzy: {enabled: true, min_term_len: 8}
+    hypothesis: The text contains classified national security information.
+    positive_examples:
+      - This paragraph is classified SECRET and may not be released to foreign nationals.
+      - The aggregate of these unit locations and readiness figures reveals classified force posture.
+    negative_examples:
+      - The history of the classification system in the United States is discussed in chapter two.
+
+  - id: L1-3
+    markings_uppercase: true
+    number: 3
+    name: Protected by another law
+    flag_when: "names, ranks and duty details of people in overseas, sensitive or routinely deployed units; sensitive information from or about a foreign government or its military learned in confidence or through an official assignment (e.g. a partner air force's mishap findings or weaknesses seen as an embassy advisor); critical infrastructure security details, such as specifics about a particular location's defensive posture"
+    not_when: "public figures and published biographies; general discussion of base defense or alliances; facts about foreign governments taken from news or cited published sources"
+    related_terms: ["forward operating base", "host nation", "force protection", "base defense", "deployed unit", "deployed squadron", "embassy", "Office of Military Cooperation", "security cooperation", "military advisor", "partner air force"]
+    description: "Information a different law says must be withheld. Examples: Names, ranks, and duty details of personnel currently in overseas, sensitive, or routinely deployed units; sensitive information from foreign governments; critical infrastructure security details (specifics about a particular locations defensive posture, etc.)"
+    source_policy: "List 1 #3"
+    detection: [exact]
+    keywords:
+      - FOREIGN GOVERNMENT INFORMATION
+      - DEFENSIVE POSTURE
+      - FORCE PROTECTION CONDITION
+    positive_examples:
+      - Captain Jane Miller and Staff Sergeant Tom Reyes of the forward-deployed security forces squadron at the overseas air base stand watch at the north gate every night.
+      - The allied ministry of defense shared its internal threat assessment with us in confidence.
+      - The base perimeter has two unmonitored gaps and the backup generators sit outside the fence line.
+    negative_examples:
+      - The author thanks his instructors at the staff college.
+
+  - id: L1-4
+    markings_uppercase: true
+    number: 4
+    name: Business secrets
+    flag_when: "a company's own unreleased pricing, bids, proposals, contract financials, costs or technical data it was paid to develop"
+    not_when: "public news about companies, published contract awards, court cases about trade secrets, general talk of intellectual property"
+    related_terms: ["cost proposal", "bid price", "contract pricing", "profit margin", "contractor proprietary", "labor rates"]
+    description: "Trade secrets and confidential company financial or commercial information. Examples: Future contractor bids and proposals, contract financials, technical data a company was paid to develop"
+    source_policy: "List 1 #4"
+    detection: [exact, fuzzy]
+    keywords:
+      - PROPRIETARY
+      - TRADE SECRET
+      - COMPANY CONFIDENTIAL
+      - COMPETITION SENSITIVE
+      - SOURCE SELECTION SENSITIVE
+      - SOURCE SELECTION INFORMATION
+      - BUSINESS CONFIDENTIAL
+    fuzzy: {enabled: true, min_term_len: 10}
+    positive_examples:
+      - The contractor's upcoming bid prices the follow-on contract at 412 million dollars with a 9 percent margin.
+      - The vendor's internal cost breakdown for the program shows labor rates for each work package.
+    negative_examples:
+      - Defense acquisition reform has been debated since the 1980s.
+
+  - id: L1-5
+    markings_uppercase: true
+    number: 5
+    name: Internal deliberations and legal advice
+    flag_when: "drafts or internal, unpublished staff products used as sources (talking papers, point papers, briefings); attorney advice or communications with lawyers, including the author's own lawsuit or court case; ongoing safety or accident investigation material, including the findings or cause of a mishap that the author or their team assessed (e.g. 'pilot error was likely the chief culprit')"
+    not_when: "published reports and policy; investigation results that were publicly released; general discussion of legal processes or how investigations work"
+    related_terms: ["legal advice", "legal opinion", "staff judge advocate", "draft memorandum", "draft policy", "mishap investigation", "accident investigation board", "aircraft mishap", "mishap", "fact-finding", "up-channel", "team of lawyers", "prepared for court", "legal battle", "lawsuit", "litigation"]
+    description: "Drafts, advice, and discussions that happen before a decision, and communications with lawyers. Examples: Sources that include draft documents, attorney advice, ongoing safety investigation material"
+    source_policy: "List 1 #5"
+    detection: [exact, fuzzy]
+    keywords:
+      - PRE-DECISIONAL
+      - PREDECISIONAL
+      - DELIBERATIVE PROCESS
+      - ATTORNEY-CLIENT
+      - ATTORNEY WORK PRODUCT
+      - PRIVILEGED AND CONFIDENTIAL
+      - SAFETY INVESTIGATION BOARD
+      - DRAFT - NOT FOR RELEASE
+    fuzzy: {enabled: true, min_term_len: 10}
+    positive_examples:
+      - According to the draft policy memo the wing staff is still debating, the commander is expected to choose option B.
+      - The legal office advised us that the program could be exposed to litigation if the contract is terminated.
+      - Preliminary findings of the ongoing safety investigation suggest the mishap pilot was fatigued.
+    negative_examples:
+      - Published Air Force doctrine describes the decision-making process in general terms.
+
+  - id: L1-6
+    number: 6
+    name: Personal privacy
+    flag_when: "a real person's home address, personal phone or email; Social Security, bank account, card or government ID numbers; medical, mental-health or gender-transition details, or personnel actions (passed over for promotion, discipline, separation) about a named or identifiable person (e.g. 'one of the first transgender pilots'); named family members"
+    not_when: "public statistics about health; unnamed family thanked in acknowledgments; official office contact details; events about public figures already reported in the news"
+    related_terms: ["spouse", "my wife", "my husband", "my son", "my daughter", "my children", "home address", "home phone", "diagnosed with", "medical history", "mental health", "PTSD", "prescribed", "transition", "passed over for promotion", "exception to policy", "my friend", "her transition", "his transition"]
+    description: "Personal details that would be an unwarranted invasion of privacy. Examples: Home addresses, personal phone numbers and emails, spouse/kid's names and personal medical information"
+    source_policy: "List 1 #6"
+    detection: [regex]
+    patterns:
+      # Written SSN format (123-45-6789 / 123 45 6789). Separators are required: bare 9-digit runs are
+      # usually database IDs in URLs, and ZIP+4 codes look similar. Bare runs count only next to "SSN".
+      - regex: '(?<![\d-])\d{3}[- ]\d{2}[- ]\d{4}(?![\d-])'
+        validator: ssn
+        context_words: [ssn, social security, ssan]
+      - regex: '(?<![\d/=-])\d{9}(?![\d-])'
+        validator: ssn
+        context_words: [ssn, social security, ssan]
+        require_context: true
+      # A number next to its label is an identifier whatever its shape (typos, partial or made-up numbers).
+      - detector: labeled_ssn
+        strength: strong
+      - detector: labeled_financial
+        strength: strong
+      - detector: labeled_gov_id
+        strength: strong
+      - detector: card_number
+        context_words: [card, visa, mastercard, amex, credit, debit]
+        require_context: true
+      - detector: personal_email
+        strength: strong
+      - detector: email
+        context_words: [personal, home, private]
+      - detector: phone_us
+        context_words: [cell, mobile, home, personal]
+      - detector: street_address
+        context_words: [home, resides, residence, lives, address]
+    positive_examples:
+      - My wife Sarah and our two children, Emma and Noah, moved with me to the new assignment.
+      - He was diagnosed with severe depression and prescribed medication during the deployment.
+      - The airman lives at 1420 Oak Hollow Drive and can be reached on his personal cell phone.
+    negative_examples:
+      - Military families face frequent relocations, which research links to stress.
+
+  - id: L1-7
+    markings_uppercase: true
+    number: 7
+    name: Law enforcement records
+    withheld_by_nature: true
+    flag_when: "witness statements, confidential informants or sources, investigative techniques of an ongoing case; details of a security or emergency response plan (e.g. how fast gates close, where response teams stage)"
+    not_when: "general descriptions of what law-enforcement agencies do; published court cases"
+    related_terms: ["AFOSI", "Office of Special Investigations", "NCIS", "criminal investigation", "informant", "the suspect", "security forces response", "active shooter", "response plan", "gates close", "lockdown", "Security Forces teams", "stage at"]
+    description: "Investigation material that could harm a case, a person, or public safety. Examples: Witness statements, confidential sources, investigation techniques, security and emergency response plans"
+    source_policy: "List 1 #7"
+    detection: [exact]
+    keywords:
+      - WITNESS STATEMENT
+      - CONFIDENTIAL INFORMANT
+      - CONFIDENTIAL SOURCE
+      - EMERGENCY RESPONSE PLAN
+      - INSTALLATION SECURITY PLAN
+      - ACTIVE SHOOTER RESPONSE PLAN
+    positive_examples:
+      - In his statement to OSI agents, the witness said he saw the suspect leave the armory at 0200.
+      - Investigators used a confidential informant inside the squadron to identify the drug ring.
+      - If the gate is breached, security forces will lock down the flight line and reroute responders through gate 3.
+    negative_examples:
+      - Law enforcement agencies cooperate through formal memoranda of agreement.
+
+  - id: L1-8
+    markings_uppercase: true
+    number: 8
+    name: Financial regulation
+    withheld_by_nature: true
+    flag_when: "findings, ratings or condition from an examination of a specific bank or credit union (examination reports are confidential even when the institution is named), or a regulator's assessment of how it operates"
+    not_when: "general economics or personal finance; news about bank failures; an institution's own published financial statements"
+    related_terms: ["bank examiner", "FDIC", "credit union examination", "examination of the bank", "examination report", "credit union", "capital adequacy", "CAMELS", "NCUA", "examiners found", "delinquent loans", "rated its"]
+    description: "Reports about the examination or condition of financial institutions. Examples: Bank examination reports"
+    source_policy: "List 1 #8"
+    detection: [exact]
+    keywords:
+      - BANK EXAMINATION REPORT
+      - REPORT OF EXAMINATION
+      - CAMELS RATING
+      - SUPERVISORY RATING
+    positive_examples:
+      - The examiners rated the credit union's asset quality as unsatisfactory in the latest examination report.
+    negative_examples:
+      - Service members should build an emergency savings fund.
+
+  - id: L1-9
+    markings_uppercase: true
+    number: 9
+    name: Wells
+    withheld_by_nature: true
+    flag_when: "geological or geophysical data or maps about specific wells"
+    not_when: "general discussion of resources, mining or water supply"
+    related_terms: ["oil well", "gas well", "water well", "drilling", "geophysical", "seismic data", "aquifer"]
+    description: "Geological and geophysical data and maps about wells. Examples: Well maps and survey data"
+    source_policy: "List 1 #9"
+    detection: [exact]
+    keywords:
+      - WELL LOG
+      - WELL LOGS
+      - WELL MAP
+      - WELL SURVEY
+      - BOREHOLE DATA
+      - SEISMIC SURVEY DATA
+    positive_examples:
+      - The survey map shows the depth and location of each production well and the formation pressures recorded.
+    negative_examples:
+      - Groundwater contamination is a concern for installations near industrial sites.

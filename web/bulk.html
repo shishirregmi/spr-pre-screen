@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SPR Bulk Check</title>
+  <link rel="stylesheet" href="/static/styles.css?v=22">
+</head>
+<body class="bulk-page">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo-hex" aria-hidden="true">SPR</div>
+      <div class="brand-text">
+        <div class="logo-name">PRE-<span>SCREEN</span></div>
+        <div class="logo-tagline">Security and Policy Review pre-screen</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="/">Review</a>
+      <a href="/bulk" class="active">Bulk check</a>
+      <a href="/checks">Checks</a>
+    </nav>
+    <div class="topbar-right">
+      <div class="iso-badge" id="iso-badge" hidden><span class="dot"></span><span class="iso-text"></span></div>
+      <div class="cl-badge" title="Security and Policy Review pre-screen: sorts and prepares, a human decides">SPR PRE-SCREEN</div>
+    </div>
+  </header>
+
+  <main class="bulk">
+    <section class="bulk-top">
+      <div class="bulk-card new-batch">
+        <h2>New batch</h2>
+        <input id="batch-name" type="text" placeholder="Batch name (e.g. Spring review)">
+        <div class="drop" id="drop">
+          <div class="drop-title">Drop PDF and Word files or a folder here</div>
+          <div class="muted small">or</div>
+          <div class="drop-buttons">
+            <label class="btn">Choose files<input id="pick-files" type="file" multiple accept=".pdf,.docx,.doc" hidden></label>
+            <label class="btn">Choose folder<input id="pick-folder" type="file" webkitdirectory multiple hidden></label>
+          </div>
+          <div id="picked" class="muted small"></div>
+        </div>
+        <button class="primary" id="start" disabled>Upload and screen</button>
+        <div id="up-status" class="small" hidden>
+          <div class="d-progress"><span id="up-text"></span><progress id="up-bar" value="0" max="1"></progress></div>
+        </div>
+      </div>
+
+      <div class="bulk-card batch-view">
+        <div class="batch-head">
+          <h2>Batch</h2>
+          <select id="batch" aria-label="Choose batch"></select>
+          <div class="spacer"></div>
+          <button id="export" class="ghost" title="Download the results as a spreadsheet (CSV)">⬇ Export CSV</button>
+          <button id="delete" class="ghost danger" title="Delete these papers and their screening results">🗑 Delete</button>
+        </div>
+        <div class="tiles" id="tiles"></div>
+        <div class="d-progress"><span id="overall-text" class="muted"></span><progress id="overall" value="0" max="1"></progress></div>
+      </div>
+    </section>
+
+    <section class="bulk-card results">
+      <div class="results-tools">
+        <div class="chips" id="filters"></div>
+        <div class="spacer"></div>
+        <input id="q" type="search" placeholder="Search papers…" aria-label="Search papers">
+      </div>
+      <div class="table-wrap">
+        <table class="results-table">
+          <thead><tr>
+            <th data-sort="status">Result</th>
+            <th data-sort="title">Paper</th>
+            <th data-sort="flags">Findings</th>
+            <th>List items found</th>
+            <th data-sort="pages">Pages</th>
+            <th data-sort="seconds">Time</th>
+            <th data-sort="checked">Checked</th>
+            <th data-sort="review">Review</th>
+            <th></th>
+          </tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+  <script src="/static/bulk.js?v=22"></script>
+  <script src="/static/status.js?v=22"></script>
+</body>
+</html>

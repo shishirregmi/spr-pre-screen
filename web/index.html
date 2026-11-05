@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SPR Pre-Screen</title>
+  <link rel="stylesheet" href="/static/styles.css?v=22">
+  <script src="/static/vendor/pdfjs/pdf.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo-hex" aria-hidden="true">SPR</div>
+      <div class="brand-text">
+        <div class="logo-name">PRE-<span>SCREEN</span></div>
+        <div class="logo-tagline">Security and Policy Review pre-screen</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="/" class="active">Review</a>
+      <a href="/bulk">Bulk check</a>
+      <a href="/checks">Checks</a>
+    </nav>
+    <div class="topbar-right">
+      <div class="iso-badge" id="iso-badge" hidden><span class="dot"></span><span class="iso-text"></span></div>
+      <div class="cl-badge" title="Security and Policy Review pre-screen: sorts and prepares, a human decides">SPR PRE-SCREEN</div>
+      <button type="button" class="ghost" id="help-btn" title="Keyboard shortcuts">⌨ Shortcuts</button>
+      <label class="btn primary">Upload papers<input id="upload" type="file" multiple
+        accept=".pdf,.docx,.doc,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword" hidden></label>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="queue" id="queue-pane">
+      <div class="queue-tools">
+        <input id="search" type="search" placeholder="Search titles…" aria-label="Search papers">
+        <select id="sort" aria-label="Sort queue">
+          <option value="checked">Last checked</option>
+          <option value="red">Red first</option>
+          <option value="green">Green first</option>
+          <option value="newest">Newest uploaded</option>
+        </select>
+      </div>
+      <div class="chips" id="status-chips" role="tablist" aria-label="Filter by result"></div>
+      <div id="upload-msg" class="upload-msg" hidden></div>
+      <ul id="queue" class="queue-list"></ul>
+      <div class="dropzone" id="dropzone" hidden>Drop PDF or Word files to upload</div>
+    </aside>
+
+    <section class="viewer-pane">
+      <div class="viewer-toolbar" id="viewer-toolbar" hidden>
+        <span id="page-info" class="muted"></span>
+        <div class="spacer"></div>
+        <button type="button" class="ghost" id="zoom-out" title="Zoom out">−</button>
+        <span id="zoom-label" class="muted">130%</span>
+        <button type="button" class="ghost" id="zoom-in" title="Zoom in">+</button>
+      </div>
+      <div class="viewer" id="viewer">
+        <div class="empty">
+          <div class="empty-title">Select a paper</div>
+          <div class="muted">Pick a paper from the queue, or upload PDF and Word files.</div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panel" id="panel">
+      <div class="empty small-empty muted">Findings for the selected paper appear here.</div>
+    </aside>
+  </main>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <dialog id="help">
+    <h3>Keyboard shortcuts</h3>
+    <dl class="keys">
+      <dt>J / K</dt><dd>Next / previous finding</dd>
+      <dt>A</dt><dd>Accept the selected finding</dd>
+      <dt>O</dt><dd>Override the selected finding (asks for a reason)</dd>
+      <dt>N / P</dt><dd>Next / previous paper in the queue</dd>
+      <dt>?</dt><dd>Show this help</dd>
+    </dl>
+    <form method="dialog"><button class="primary">Close</button></form>
+  </dialog>
+
+  <script src="/static/app.js?v=22"></script>
+  <script src="/static/status.js?v=22"></script>
+</body>
+</html>

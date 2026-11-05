@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SPR Checks</title>
+  <link rel="stylesheet" href="/static/styles.css?v=22">
+</head>
+<body class="bulk-page">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo-hex" aria-hidden="true">SPR</div>
+      <div class="brand-text">
+        <div class="logo-name">PRE-<span>SCREEN</span></div>
+        <div class="logo-tagline">Security and Policy Review pre-screen</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="/">Review</a>
+      <a href="/bulk">Bulk check</a>
+      <a href="/checks" class="active">Checks</a>
+    </nav>
+    <div class="topbar-right">
+      <div class="iso-badge" id="iso-badge" hidden><span class="dot"></span><span class="iso-text"></span></div>
+      <div class="cl-badge" title="Security and Policy Review pre-screen: sorts and prepares, a human decides">SPR PRE-SCREEN</div>
+    </div>
+  </header>
+
+  <main class="bulk checks-layout">
+    <section class="bulk-card check-form">
+      <h2 id="form-title">Add a custom check</h2>
+      <div class="draft-box" id="draft-box">
+        <label class="field"><span>✨ Draft it for me <span class="muted small">(local model; you review before saving)</span></span>
+          <textarea id="draft-idea" rows="2" maxlength="2000" placeholder="Say what to catch in your own words, or paste a passage that should be flagged. e.g. 'Anything about the unreleased exercise IRON VIGIL: dates, sites, units, case numbers like IV-2291'"></textarea>
+        </label>
+        <div class="d-row"><button type="button" id="draft" class="primary">Generate and fill the form</button></div>
+        <div id="draft-notes" class="small"></div>
+      </div>
+      <form id="form" autocomplete="off">
+        <label class="field"><span>Name <span class="req">*</span></span>
+          <input id="f-name" type="text" required minlength="3" maxlength="120" placeholder="e.g. Unreleased exercise name">
+        </label>
+
+        <div class="note" id="official-note" hidden>Official list item. Its list, number and patterns stay as issued;
+          your changes are saved beside the list and <b>Restore original</b> undoes them.</div>
+        <fieldset class="field">
+          <legend>Which list it belongs to</legend>
+          <div id="f-list-row"><label class="radio"><input type="radio" name="list" value="1"> <b>List 1</b> – must never be published: a clear match is <span class="pill red">Red</span></label>
+          <label class="radio"><input type="radio" name="list" value="2" checked> <b>List 2</b> – a reviewer weighs it: clear match <span class="pill red">Red</span>, possible <span class="pill yellow">Yellow</span></label></div>
+          <label class="radio"><input type="checkbox" id="f-judgment"> Judgment item: never more than <span class="pill yellow">Yellow</span>, and only when something non-public is revealed</label>
+        </fieldset>
+
+        <label class="field"><span>What to look for <span class="req">*</span></span>
+          <textarea id="f-desc" rows="2" required minlength="10" placeholder="Describe the information in plain words, e.g. 'Names or details of the unreleased exercise IRON VIGIL.'"></textarea>
+        </label>
+        <div class="form-row">
+          <label class="field">Flag when
+            <textarea id="f-when" rows="2" placeholder="What makes a passage a finding, e.g. 'dates, locations or participants of the exercise'"></textarea>
+          </label>
+          <label class="field">Not a finding when
+            <textarea id="f-not" rows="2" placeholder="Look-alikes to ignore, e.g. 'publicly announced exercises like Red Flag'"></textarea>
+          </label>
+        </div>
+        <div class="form-row">
+          <label class="field"><span>Examples of a finding <span class="muted small">(one per line)</span></span>
+            <textarea id="f-pos" rows="2" placeholder="A sentence that should be flagged"></textarea>
+          </label>
+          <label class="field"><span>Examples that are NOT a finding <span class="muted small">(one per line)</span></span>
+            <textarea id="f-neg" rows="2" placeholder="A similar sentence that should not be flagged"></textarea>
+          </label>
+        </div>
+
+        <label class="field"><span>Words or names that point to it <span class="muted small">(one per line or comma-separated)</span></span>
+          <textarea id="f-words" rows="2" placeholder="IRON VIGIL, Iron Vigil 26"></textarea>
+          <span class="hint">These point the model to the right passages. A word on its own never creates a finding; the passage has to be about your check.</span>
+        </label>
+
+        <details class="box" id="f-patterns-box">
+          <summary>Exact patterns (advanced)</summary>
+          <label class="field">Regular expressions, one per line
+            <textarea id="f-patterns" rows="2" placeholder="e.g. \bIV-\d{4}\b"></textarea>
+            <span class="hint">For identifiers with a fixed format (like an ID number). A match is flagged on its own, like an SSN.</span>
+          </label>
+        </details>
+
+        <label class="field" id="f-source-row"><span>Source or reason <span class="muted small">(optional)</span></span>
+          <input id="f-source" type="text" maxlength="300" placeholder="e.g. PA guidance memo 12 Nov 2026">
+        </label>
+
+        <details class="box" id="try-box">
+          <summary>Test on sample text</summary>
+          <textarea id="try-text" rows="4" placeholder="Paste a paragraph to see what your words and patterns find"></textarea>
+          <button type="button" id="try">Test</button>
+          <div id="try-out" class="small"></div>
+          <div class="hint">The meaning-based part (the model reading passages) runs when papers are screened.</div>
+        </details>
+
+        <div class="d-row">
+          <button type="submit" class="primary" id="save">Save check</button>
+          <button type="button" id="cancel" hidden>Cancel editing</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="check-lists">
+      <div class="bulk-card">
+        <div class="batch-head">
+          <h2>Your custom checks</h2>
+          <div class="spacer"></div>
+          <button id="rescreen" title="Screen every paper without a decision again, with the current checks">↻ Re-screen open papers</button>
+        </div>
+        <div id="custom"></div>
+      </div>
+      <div class="bulk-card">
+        <div class="batch-head"><h2>Official lists</h2><div class="spacer"></div><span class="muted small" id="version"></span></div>
+        <div class="hint">Edit or remove an item here. Changes apply to papers screened from then on; a list always keeps at least one item.</div>
+        <div id="official"></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+  <script src="/static/checks.js?v=22"></script>
+  <script src="/static/status.js?v=22"></script>
+</body>
+</html>

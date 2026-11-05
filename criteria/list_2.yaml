@@ -1,0 +1,407 @@
+# LIST 2: what a security and policy reviewer weighs. Always checked, even when List 1 found something.
+# Guide rules: clear match = RED, possible match = YELLOW. Judgment items (OPSEC clues, MCTL topics, critical
+# technology, context-dependent items) are YELLOW by default -> `judgment: true`.
+# Source: the review guide's screening lists. Items keep the guide's
+# order (L2-01 .. L2-31). Do not add or remove items: only the detection details below are ours.
+# Which items count as judgment items is our interpretation of the guide and should be confirmed.
+# Unless a criterion sets `context`, List 2 hits found only in References/Bibliography are listed as
+# low-confidence (citing a paper about the F-35 is not the same as discussing it).
+list: 2
+policy_version: screening-lists-v1
+criteria:
+  - id: L2-01
+    number: 1
+    name: Animal testing
+    flag_when: "research or tests on live animals described in the paper"
+    not_when: "general mention of animal research"
+    related_terms: ["swine", "porcine", "rats", "mice", "primates", "goats", "rabbits", "IACUC", "in vivo", "anesthetized"]
+    description: "Animal testing"
+    detection: [exact]
+    keywords: [animal testing, animal test, animal subjects, animal model, animal models, live-tissue training, porcine model, murine model, laboratory animals]
+    positive_examples:
+      - Twelve anesthetized swine were exposed to blast overpressure to measure lung injury.
+
+  - id: L2-02
+    number: 2
+    name: Directed energy
+    flag_when: "directed-energy weapons: capabilities, test results or programs"
+    not_when: "a passing mention of lasers or microwaves; a doctrinal definition of electronic warfare that lists directed energy"
+    related_terms: ["microwave weapon", "laser weapon", "electromagnetic pulse", "EMP"]
+    description: "Directed energy"
+    detection: [exact, fuzzy]
+    keywords: [directed energy, directed-energy weapon, directed energy weapon, DEW, high-power microwave, high power microwave, HPM weapon]
+    fuzzy: {enabled: true}
+    positive_examples:
+      - The high-power microwave system disabled the drone swarm's electronics at two kilometers.
+
+  - id: L2-03
+    number: 3
+    name: New or significantly modified weapons, equipment or techniques
+    topic: true
+    flag_when: "a new or developmental weapon or a significant modification (e.g. hypersonic weapons): performance, design, test plans or results, especially unreleased"
+    not_when: "historical weapons (World War II and earlier programs); public descriptions of long-fielded systems"
+    related_terms: ["missile", "munition", "warhead", "seeker", "hypersonic", "weapon system", "weapons system", "guided bomb", "fuze"]
+    description: "New weapons or weapon systems, significant modifications or improvements to existing weapons or weapon systems, equipment, or techniques"
+    judgment: true
+    detection: [exact]
+    keywords: [new weapon system, next-generation weapon, weapon upgrade, weapons upgrade, modified munition, hypersonic weapon, prototype weapon]
+    positive_examples:
+      - The upgraded seeker doubles the missile's engagement range against maneuvering targets.
+      - We propose modifying the bomb's fuze so it detonates after penetrating hardened bunkers.
+
+  - id: L2-04
+    number: 4
+    name: Unmanned aircraft (UAS/UAV/RPA)
+    flag_when: "unmanned aircraft (drones, UAS, RPA): capabilities, operations, numbers, weaknesses"
+    not_when: "drones named in a list or in passing; unmanned spacecraft or satellites (space, not aircraft)"
+    related_terms: ["unmanned", "remotely operated aircraft", "quadcopter", "loitering munition", "drone swarm"]
+    description: "Unmanned aerial system/unmanned aerial vehicle/remotely piloted aircraft (drones and remotely piloted aircraft)"
+    detection: [exact, fuzzy]
+    keywords: [unmanned aerial system, unmanned aircraft system, unmanned aerial vehicle, unmanned aircraft, remotely piloted aircraft, UAS, UAV, sUAS, RPA, drone, drones, MQ-9, MQ-1, RQ-4, Reaper, Global Hawk]
+    fuzzy: {enabled: true}
+    positive_examples:
+      - Remotely operated aircraft flew persistent surveillance orbits over the valley.
+
+  - id: L2-05
+    number: 5
+    name: Cyber warfare, vulnerabilities or research
+    flag_when: "cyber warfare, a specific system's or network's vulnerability, or cyber research results"
+    not_when: "the word 'exploit' in a non-cyber sense; general statements that cyber threats are growing"
+    related_terms: ["cyber", "hacking", "hacker", "spoofing", "spoofed", "jamming", "jammed", "intrusion", "ransomware", "phishing", "unauthenticated", "penetration test", "credentials", "default credentials", "default password", "password", "unpatched", "patch", "firewall", "wireless", "network access", "malware", "exploit", "zero-day", "backdoor", "encryption", "hacked", "access point", "SCADA", "industrial control system"]
+    description: "Cyber warfare, cyber vulnerabilities, cyber research"
+    detection: [exact, fuzzy]
+    keywords: [cyber warfare, cyberwarfare, cyber attack, cyberattack, cyber operations, offensive cyber, cyber vulnerability, cyber vulnerabilities, zero-day, malware, network intrusion, cyber research]
+    fuzzy: {enabled: true}
+    positive_examples:
+      - The maintenance laptop accepts unauthenticated commands, letting an attacker reprogram the aircraft's mission computer.
+
+  - id: L2-06
+    number: 6
+    name: F-22 / F-35
+    flag_when: "the F-22 or F-35: capabilities, performance, numbers, weaknesses, basing"
+    not_when: "the aircraft named only in passing or in a list of aircraft; publicly announced goals such as the Secretary of Defense's 80 percent mission-capable goal; public acquisition history"
+    related_terms: ["fifth-generation fighter", "stealth fighter"]
+    description: "F-22/F-35"
+    detection: [exact]
+    keywords: [F-22, F-22A, F 22, F22, Raptor, F-35, F-35A, F-35B, F-35C, F 35, F35, Lightning II, Joint Strike Fighter]
+    positive_examples:
+      - Fifth-generation stealth fighter availability rates fell below sixty percent last year.
+
+  - id: L2-07
+    number: 7
+    name: Unexplained physiological events / OBOGS / hypoxia
+    flag_when: "unexplained physiological events, oxygen-system (OBOGS) problems, hypoxia cases"
+    not_when: "general aviation physiology"
+    related_terms: ["oxygen system", "physiological episode", "physiological episodes", "altitude chamber", "dizziness at altitude"]
+    description: "Unexplained physiologic events/on-board oxygen generating system/hypobaria / hypoxia (unexplained physiological events, white brain matter, etc.)"
+    detection: [exact, fuzzy]
+    keywords: [unexplained physiological event, unexplained physiological events, UPE, UPEs, on-board oxygen generating system, onboard oxygen generating system, OBOGS, hypobaria, hypobaric, hypoxia, hypoxic, white matter hyperintensities, white brain matter]
+    fuzzy: {enabled: true}
+    positive_examples:
+      - Several pilots reported dizziness and tingling at altitude, and the cause of the episodes has not been found.
+
+  - id: L2-08
+    number: 8
+    name: High-energy lasers, particle beams, arms control treaty implementation
+    flag_when: "high-energy lasers, particle beams, or how an arms-control treaty is being implemented"
+    not_when: "lasers in a non-weapon sense; historical treaties and armistices (e.g. 1940 Franco-German armistice); a passing mention that a treaty exists or ended"
+    related_terms: ["laser", "arms control", "treaty", "verification regime"]
+    description: "High-energy lasers and particle beam technology; and arms control treaty implementation"
+    detection: [exact, fuzzy]
+    keywords: [high-energy laser, high energy laser, HEL, particle beam, neutral particle beam, arms control treaty, treaty implementation, treaty compliance, New START, INF Treaty]
+    fuzzy: {enabled: true}
+    positive_examples:
+      - Inspections under the treaty require us to declare each deployed launcher before the data exchange.
+
+  - id: L2-09
+    number: 9
+    name: Space military activities or nuclear weapons
+    flag_when: "military space activities or nuclear weapons, including weapon-effects research"
+    not_when: "general deterrence theory; public history of nuclear or space programs, including Soviet-era programs; cited public reporting"
+    related_terms: ["nuclear", "satellite", "orbit", "orbital", "space-based", "warhead"]
+    description: "Military activities or applications in space, nuclear weapons, including weapon-effects research"
+    detection: [exact, fuzzy]
+    keywords: [nuclear weapon, nuclear weapons, nuclear warhead, nuclear deterrent, nuclear enterprise, ICBM, Minuteman III, Sentinel ICBM, B61, weapon effects, weapons effects, space control, counterspace, anti-satellite, ASAT, orbital warfare, space superiority, military satellite]
+    fuzzy: {enabled: true}
+    positive_examples:
+      - The blast and radiation effects of the warhead were modeled against hardened silos.
+
+  - id: L2-10
+    number: 10
+    name: Military operations, major exercises, OPSEC
+    flag_when: "details of military operations, major exercises or future war plans; operations-security clues"
+    not_when: "history of past, publicly documented operations"
+    related_terms: ["campaign plan", "wargame", "war game", "major exercise", "combat operations", "ground offensive"]
+    description: "Military operations, significant exercises, and operations security (details of future war plans)"
+    judgment: true
+    detection: [exact]
+    keywords: [operations security, OPSEC, war plan, war plans, OPLAN, CONPLAN, operation plan]
+    positive_examples:
+      - In the next phase of the campaign plan, the wing will surge sorties from the forward base before the ground offensive.
+
+  - id: L2-11
+    number: 11
+    name: Chemical and biological warfare; biological and toxin research
+    flag_when: "chemical or biological warfare, or biological and toxin research"
+    not_when: "'toxic' leadership or workplaces, abuse, harassment or assault; public-health statistics; a passing mention of chemical weapons in history"
+    related_terms: ["pathogen", "toxin", "anthrax", "sarin", "biological agent", "chemical agent", "decontamination"]
+    description: "Chemical and biological warfare issues; biological and toxin research"
+    detection: [exact, fuzzy]
+    keywords: [chemical warfare, biological warfare, chemical weapon, chemical weapons, biological weapon, biological weapons, bioweapon, nerve agent, toxin research, select agent, CBRN]
+    fuzzy: {enabled: true}
+    positive_examples:
+      - The lab cultured the pathogen to test how quickly decontamination foam neutralized it.
+
+  - id: L2-12
+    number: 12
+    name: Current operations, readiness or posture
+    flag_when: "current operations, readiness or posture for future operations, e.g. a unit's mission-capable rate or shortfalls"
+    not_when: "general readiness concepts; publicly announced readiness goals; service-wide statistics from public reports"
+    related_terms: ["mission capable", "aircraft availability", "parts shortage", "not mission capable", "readiness shortfall"]
+    description: "Information related to current operations, readiness or posture for future operations"
+    judgment: true
+    detection: [exact]
+    keywords: [mission capable rate, readiness rate, force posture, current operations]
+    positive_examples:
+      - Only six of the squadron's aircraft are currently mission capable because of a parts shortage.
+
+  - id: L2-13
+    number: 13
+    name: Vulnerabilities affecting readiness or coalition operations
+    flag_when: "a vulnerability that could hurt a unit's readiness or an operation with other countries"
+    not_when: "general discussion of alliance challenges; lessons drawn from history or published case studies"
+    related_terms: ["partner nation", "coalition operations", "single point of failure", "host nation support"]
+    description: "Vulnerabilities that could impact the readiness of units or operations involving other countries"
+    judgment: true
+    detection: []
+    positive_examples:
+      - If the partner nation's fuel deliveries stop, the coalition air campaign cannot sustain more than three days of operations.
+
+  - id: L2-14
+    number: 14
+    name: Number, location and capabilities of operational assets
+    flag_when: "the number, location and capabilities of specific operational assets"
+    not_when: "public order-of-battle figures from published sources; civilian or commercial facilities (mines, factories, ports); program counts from published studies"
+    related_terms: ["beddown", "bed down", "aircraft are based"]
+    description: "Details of number, location, and capabilities of operational assets"
+    judgment: true
+    detection: []
+    positive_examples:
+      - Twelve tankers and four AWACS aircraft are based at the eastern airfield and can reach the strait within forty minutes.
+
+  - id: L2-15
+    number: 15
+    name: Detailed sequence of events in an operation, training scenario or exercise
+    flag_when: "a detailed sequence of events in an operation, training scenario or major exercise"
+    not_when: "a one-line mention of an exercise; historical operations (e.g. World War II) and lessons drawn from published history"
+    related_terms: ["H-hour", "strike package", "sortie", "first wave", "second wave"]
+    description: "Detailed descriptions of a sequence of events in an operational or training scenario, or exercise to include major exercises such as readiness assessment/evaluations or Flag/major training exercises"
+    judgment: true
+    detection: [exact]
+    keywords: [Red Flag, Green Flag, Blue Flag, readiness assessment, operational readiness inspection, unit effectiveness inspection, major training exercise]
+    positive_examples:
+      - At H-hour the strike package crossed the line, at H+12 the jammers turned on, and at H+20 the second wave hit the airfield.
+
+  - id: L2-16
+    number: 16
+    name: Capabilities of unique command and control nodes
+    flag_when: "detailed capabilities or limits of a specific command-and-control node (a named AOC or space operations center), especially from first-hand sources"
+    not_when: "doctrine about how AOCs work in general"
+    related_terms: ["operations center", "operations floor", "C2 node", "command post"]
+    description: "Detailed descriptions that reveal capability of unique command and control node (Space Operations Centers, Air Operations Centers, etc.)"
+    judgment: true
+    detection: [exact]
+    keywords: [Air Operations Center, Combined Air Operations Center, CAOC, Space Operations Center, command and control node]
+    positive_examples:
+      - The operations floor can track 400 sorties at once, but loses its satellite link if the backup terminal fails.
+
+  - id: L2-17
+    number: 17
+    name: Tactics, techniques and procedures
+    flag_when: "specific tactics, techniques or procedures that are not public"
+    not_when: "the phrase 'tactics, techniques and procedures' used generally"
+    related_terms: ["attack profile", "ingress route", "egress route", "employment tactics"]
+    description: "Information that reveals tactics, techniques and procedures"
+    judgment: true
+    detection: [exact]
+    keywords: [tactics, techniques, and procedures, tactics techniques and procedures, TTPs]
+    positive_examples:
+      - Pilots descend below 500 feet and approach from the east to stay masked from the radar until the final turn.
+
+  - id: L2-18
+    number: 18
+    name: Deployment schedules or locations
+    flag_when: "a specific unit's planned or current deployment: where and when"
+    not_when: "past, publicly reported deployments; 'Airmen deploy to...' in general; service commitments, career timelines and assignment policy"
+    related_terms: ["deployment window", "rotation schedule"]
+    description: "Deployment schedules or locations"
+    judgment: true
+    detection: [exact]
+    keywords: [deployment schedule, deployment location, deploys to, deployed location]
+    positive_examples:
+      - The squadron deploys to the Gulf in March and rotates home in September.
+
+  - id: L2-19
+    number: 19
+    name: Originates in the Washington D.C. area
+    flag_when: "the paper is written at or proposed for release from a Washington D.C. area organization (for example the Pentagon or Joint Base Andrews)"
+    not_when: "Washington, DC as a publisher in citations"
+    related_terms: ["Pentagon", "Headquarters Air Force", "Washington"]
+    description: "Originates, or is proposed for release, in the Washington D.C. metropolitan area"
+    judgment: true
+    detection: [exact]
+    keywords: ["Washington, D.C.", Washington DC, Washington D.C, the Pentagon, "Arlington, VA", "Arlington, Virginia", Joint Base Andrews, Joint Base Anacostia-Bolling, Bolling AFB, Fort McNair, National Defense University]
+
+  - id: L2-20
+    number: 20
+    name: National or international interest
+    statement: true
+    flag_when: "information likely to become a national or international news item, including inflammatory or politically charged claims stated as fact by a DoD author (e.g. calling vaccines 'falsely called vaccines')"
+    not_when: "commentary on events already in the news; the author's own opinions, analysis or recommendations"
+    related_terms: ["media attention", "national news", "international incident", "vaccine", "vaccines", "conspiracy", "cover-up", "stolen election", "hoax", "falsely called"]
+    description: "Is, or has the potential to become, an item of national or international interest"
+    judgment: true
+    detection: []
+    positive_examples:
+      - This finding would likely draw national media attention and questions from Congress.
+
+  - id: L2-21
+    number: 21
+    name: President or Secretary of Defense authority
+    statement: true
+    flag_when: "statements about the President's or Secretary of Defense's authority or decisions"
+    not_when: "general civics"
+    related_terms: ["executive order", "commander in chief"]
+    description: "References President and Secretary of Defense authority"
+    judgment: true
+    detection: [exact]
+    keywords: [Secretary of Defense, SecDef, President of the United States, presidential authority, commander in chief, National Command Authority]
+    positive_examples:
+      - Only the President can authorize this use of force under his constitutional authority.
+
+  - id: L2-22
+    number: 22
+    name: National security policy or foreign relations
+    flag_when: "statements that would affect national security policy or foreign relations if attributed to DoD, such as criticism of a partner nation's military, leaders or competence learned through an official assignment"
+    not_when: "analysis of public policy in general; the author's own opinions or recommendations about published strategy"
+    related_terms: ["policy recommendation", "security guarantee", "diplomatic relations", "United States should"]
+    description: "Affects national security policy or foreign relations"
+    judgment: true
+    detection: [exact]
+    keywords: [national security policy, foreign policy, foreign relations, National Security Strategy, National Defense Strategy]
+    positive_examples:
+      - The United States should end its security guarantee to the ally if it refuses to raise defense spending.
+
+  - id: L2-23
+    number: 23
+    name: Potential controversy among DoD components or agencies
+    flag_when: "a subject of dispute between DoD components or with another federal agency"
+    not_when: "routine discussion of jointness"
+    related_terms: ["interservice rivalry", "roles and missions", "budget fight", "turf war"]
+    description: "Concerns subjects of potential controversy among DoD components or with other federal agencies"
+    judgment: true
+    detection: []
+    positive_examples:
+      - The Army's claim to this mission is wasteful, and the Air Force should take over its long-range fires budget.
+
+  - id: L2-24
+    number: 24
+    name: Official DoD spokesperson (e.g. O-7 or higher author)
+    flag_when: "the author is a general officer, flag officer or senior executive and could be taken as speaking for DoD"
+    not_when: "generals mentioned or quoted in the text"
+    related_terms: ["four-star", "three-star", "general officer", "flag officer"]
+    description: "Is information that is presented by a DoD employee who, by virtue of rank, position, or expertise, would be considered an official DoD spokesperson (e.g. if the author is an O-7 or higher)"
+    judgment: true
+    # The author block is checked by the structure checks (app/detect/structure.py); generals mentioned in the
+    # text are not the author and do not count.
+    detection: [exact]
+    keywords: [Brigadier General, Major General, Lieutenant General, Rear Admiral, Vice Admiral, Senior Executive Service]
+
+  - id: L2-25
+    number: 25
+    name: Technical data controlled by ITAR
+    flag_when: "technical data controlled by ITAR: designs, specifications, source code, test data of defense articles"
+    not_when: "general discussion of export control or trade policy"
+    related_terms: ["schematic", "schematics", "source code", "design specification", "technical drawing", "export control"]
+    description: "Contains technical data, including data developed under contract or independently developed and controlled by the International Traffic in Arms Regulations"
+    detection: [exact, fuzzy]
+    keywords: [ITAR, International Traffic in Arms Regulations, export controlled, export-controlled, USML, United States Munitions List, EAR controlled, ECCN, controlled technical data]
+    fuzzy: {enabled: true, min_term_len: 8}
+    positive_examples:
+      - The appendix lists the guidance kit's circuit schematics and the source code for the targeting algorithm.
+
+  - id: L2-26
+    number: 26
+    name: Topic designated by DOPSR
+    flag_when: "a topic DOPSR currently designates, such as personnel readiness"
+    not_when: "general personnel issues"
+    related_terms: ["non-deployable", "manning shortfall", "personnel shortfall"]
+    description: "Any other contemporary topic that is designated by the Defense Office of Prepublication and Security Review (DOPSR) (such as personnel readiness)"
+    judgment: true
+    detection: [exact]
+    keywords: [DOPSR, prepublication review, personnel readiness]
+    positive_examples:
+      - Nearly a third of the career field is non-deployable because of medical and training shortfalls.
+
+  - id: L2-27
+    number: 27
+    name: Sister service or DoD component work without documented coordination
+    flag_when: "work done with or input from another service or DoD component (sponsors, POCs, interviews) without documented coordination"
+    not_when: "citing another service's published documents"
+    related_terms: ["Army Research Laboratory", "Naval Research Laboratory", "jointly with the", "in partnership with the"]
+    description: "Work in conjunction with a sister service or other DoD component that has had no coordination documented when we receive materials"
+    judgment: true
+    detection: []
+    positive_examples:
+      - This study was conducted jointly with the Navy's research laboratory, which provided its test data.
+
+  - id: L2-28
+    number: 28
+    name: Other Air Force installation or wing work without documented coordination
+    flag_when: "work done with another Air Force wing or installation (sponsors, advisors, data) without documented coordination"
+    not_when: "citing published Air Force documents"
+    related_terms: ["another wing", "other installations", "Air Force Research Laboratory", "AFRL"]
+    description: "Work with another Department of the Air Force installation or wing that has had no coordination documented when we receive materials"
+    judgment: true
+    detection: []
+    positive_examples:
+      - Data for this paper came from interviews with maintainers at another wing's installation.
+
+  - id: L2-29
+    number: 29
+    name: Unit critical information list items
+    flag_when: "items on a unit's critical information list: numbers of personnel, aircraft, equipment"
+    not_when: "public budget or force-structure totals"
+    related_terms: ["assigned personnel", "aircraft assigned", "personnel assigned"]
+    description: "Information on unit’s critical information list (numbers of personnel, planes, equipment, etc.)"
+    judgment: true
+    detection: [exact]
+    keywords: [critical information list, CIL]
+    positive_examples:
+      - The wing currently has 1,850 assigned personnel, 54 aircraft and 6 spare engines on hand.
+
+  - id: L2-30
+    number: 30
+    name: Sensitive space information
+    topic: true
+    flag_when: "sensitive space information: satellite capabilities, orbits, weaknesses"
+    not_when: "public space policy and history"
+    related_terms: ["satellite", "space domain awareness", "ground station", "on-orbit"]
+    description: "Sensitive space information"
+    judgment: true
+    detection: []
+    positive_examples:
+      - The satellite's orbit can be adjusted to avoid tracking, and its sensors cover the region twice daily.
+
+  - id: L2-31
+    number: 31
+    name: PFAS release or Air Force response
+    flag_when: "a release of PFAS/PFOA/PFOS compounds, or the Air Force response to one"
+    not_when: "chemistry or environmental policy in general"
+    related_terms: ["groundwater contamination", "fire training area", "forever chemicals", "drinking water contamination"]
+    description: "Materials reporting the release of, or Department of the Air Force response to, the release of, compounds containing Perfuoroalkyl substances (PFAS), including Perfluorooctanoic acid (PFOA) or Perfoluorooctane sulfonate (PFOS)."
+    detection: [exact, fuzzy]
+    keywords: [PFAS, PFOA, PFOS, perfluoroalkyl, polyfluoroalkyl, perfluorooctanoic acid, perfluorooctane sulfonate, AFFF, aqueous film forming foam, firefighting foam]
+    fuzzy: {enabled: true, min_term_len: 8}
+    positive_examples:
+      - Groundwater near the fire training area exceeded the advisory level for the foam chemicals.
